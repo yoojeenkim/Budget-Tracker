@@ -41,3 +41,5 @@ function checkIndexDb() {
         }
     }
 }
+
+window.addEventListener("online", checkIndexDb);
