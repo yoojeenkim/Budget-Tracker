@@ -5,7 +5,7 @@ const FILES_TO_CACHE = [
     "/db.js",
     "/index.js",
     "/manifest.js",
-    "/;styles.css",
+    "/styles.css",
     "/icons/icon-192x192.png",
     "/icons/icon-512x512.png",
     "https://cdn.jsdelivr.net/npm/chart.js@2.8.0"
@@ -13,7 +13,9 @@ const FILES_TO_CACHE = [
 
 self.addEventListener("install", function (evt) {
     evt.waitUntil(
-        caches.open(CACHE_NAME).then((cache) => cache.addAll(FILES_TO_CACHE))
+        caches.open(CACHE_NAME).then(function(cache) {
+           return cache.addAll(urlsToCache); 
+        })
     );
 
     self.skipWaiting();
