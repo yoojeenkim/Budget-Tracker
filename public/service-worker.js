@@ -1,4 +1,4 @@
-const CACHE_NAME = "static-cache-v1";
+const CACHE_NAME = "my-site-cache-v1";
 const DATA_CACHE_NAME = "data-cache-v1";
 const FILES_TO_CACHE = [
     "/",
@@ -17,8 +17,6 @@ self.addEventListener("install", function (evt) {
            return cache.addAll(urlsToCache); 
         })
     );
-
-    self.skipWaiting();
 });
 
 self.addEventListener("fetch", function(event) {
@@ -27,14 +25,21 @@ self.addEventListener("fetch", function(event) {
             caches.open(DATA_CACHE_NAME).then(cache => {
                 return fetch(event.request)
                 .then(response => {
-                    cache.put(event.request, response.clone());
+                    if (response.status === 200) {
+                        cache.put(event.request.url, response.clone());
+                    }
+
                     return response;
                 })
-                .catch(() => caches.match(event.request));
-            })
+                .catch(err => {
+                    return caches.match(event.request);
+                });
+            }).catch(err => console.log(err))
         );
+
         return;
     }
+    
     event.respondWith(
         fetch(event.request).catch(function() {
             return caches.match(event.request).then(function(response) {
